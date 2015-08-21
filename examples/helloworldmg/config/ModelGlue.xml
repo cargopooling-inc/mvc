@@ -1,0 +1,75 @@
+<!DOCTYPE modelglue PUBLIC "-//MODELGLUE//DTD MODELGLUE//EN"
+        "http://mm-projects.s3.amazonaws.com/dtd/mvc.dtd">
+<modelglue>
+
+	<controllers>
+
+        <controller name="controller" type="examples.helloworldmg.controller.Controller">
+
+            <event-listener message="sayHello" function="sayHello"/>
+
+        </controller>
+
+	</controllers>
+
+	<event-handlers>
+
+		<event-handler name="home" access="public">
+
+			<views>
+				<include name="body" template="body.cfm" />
+			</views>
+
+			<results>
+				<result do="main"/>
+			</results>
+
+		</event-handler>
+
+		<event-handler name="say.hello" access="public">
+
+            <broadcasts>
+                <message name="sayHello"/>
+            </broadcasts>
+
+			<results>
+				<result do="home" redirect="false"/>
+			</results>
+
+		</event-handler>
+
+		<event-handler name="exception" access="public">
+
+            <views>
+                <include name="body" template="exception.cfm" />
+            </views>
+
+			<results>
+				<result do="main"/>
+			</results>
+
+		</event-handler>
+
+		<event-handler name="not-found" access="public">
+
+            <views>
+                <include name="body" template="not-found.cfm" />
+            </views>
+
+			<results>
+				<result do="main"/>
+			</results>
+
+		</event-handler>
+
+        <event-handler name="main" access="private">
+
+			<views>
+				<include name="main" template="main.cfm" />
+			</views>
+
+		</event-handler>
+		
+	</event-handlers>
+	
+</modelglue>
