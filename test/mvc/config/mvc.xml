@@ -1,0 +1,88 @@
+<mvc>
+	
+	<configs>
+		<config name="test" value="test" />
+	</configs>
+	
+	<controllers>
+		<controller name="pippo" class="test.mvc.config.Controller">
+			<bind name="pippo" handler="pippoFunction" />
+		</controller>
+	</controllers>
+
+    <interceptors>
+
+        <interceptor name="typeA">
+
+            <before>
+
+                <triggers>
+                    <trigger name="pippo">
+                        <value name="pippo" value="pippo" />
+                    </trigger>
+                </triggers>
+
+                <views>
+                    <view name="pippo" template="pippo.cfm" append="true" >
+                        <value name="pippo" value="pippo" overwrite="false" />
+                    </view>
+                </views>
+
+                <results>
+                    <result name="pippo" to="event" redirect="true" append="data" />
+                </results>
+
+            </before>
+
+            <after>
+
+                <triggers>
+                    <trigger name="pippo">
+                        <value name="pippo" value="pippo" />
+                    </trigger>
+                </triggers>
+
+                <views>
+                    <view name="pippo" template="pippo.cfm" append="true" >
+                        <value name="pippo" value="pippo" overwrite="false" />
+                    </view>
+                </views>
+
+                <results>
+                    <result name="pippo" to="event" redirect="true" append="data" />
+                </results>
+
+            </after>
+
+        </interceptor>
+
+    </interceptors>
+	
+	<events>
+		
+		<event name="home" access="public" cache="true" cachekey="data" cachetimeout="123" interceptor="typeA">
+			
+			<triggers>
+				<trigger name="pippo">
+					<value name="pippo" value="pippo" />
+				</trigger>				
+			</triggers>
+			
+			<views>
+				<view name="pippo" template="pippo.cfm" append="true" cache="true" cachekey="data" cachetimeout="123">
+					<value name="pippo" value="pippo" overwrite="false" />
+				</view>
+				<view name="main" template="pluto.cfm" append="true" cache="true" cachekey="data" cachetimeout="123">
+					<value name="pippo" value="pippo" overwrite="false" />
+				</view>
+			</views>
+			
+			<results>
+				<result name="pippo" to="event" redirect="true" append="data" />
+			</results>
+			
+		</event>
+		
+	</events>
+	
+</mvc>

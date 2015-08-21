@@ -1,0 +1,88 @@
+<modelglue>
+	
+	<config>
+		<setting name="test" value="test" />
+	</config>
+	
+	<controllers>
+		<controller name="pippo" type="test.mvc.config.Controller">
+			<event-listener message="pippo" function="pippoFunction" />
+		</controller>
+	</controllers>
+
+    <event-types>
+
+        <event-type name="typeA">
+
+            <before>
+
+                <broadcasts>
+                    <message name="pippo">
+                        <argument name="pippo" value="pippo" />
+                    </message>
+                </broadcasts>
+
+                <views>
+                    <include name="pippo" template="pippo.cfm" append="true" >
+                        <value name="pippo" value="pippo" overwrite="false" />
+                    </include>
+                </views>
+
+                <results>
+                    <result name="pippo" do="event" redirect="true" append="data" />
+                </results>
+
+            </before>
+
+            <after>
+
+                <broadcasts>
+                    <message name="pippo">
+                        <argument name="pippo" value="pippo" />
+                    </message>
+                </broadcasts>
+
+                <views>
+                    <include name="pippo" template="pippo.cfm" append="true" >
+                        <value name="pippo" value="pippo" overwrite="false" />
+                    </include>
+                </views>
+
+                <results>
+                    <result name="pippo" do="event" redirect="true" append="data" />
+                </results>
+
+            </after>
+
+        </event-type>
+
+    </event-types>
+	
+	<event-handlers>
+		
+		<event-handler name="home" access="public" cache="true" cachekey="data" cachetimeout="123" type="typeA">
+			
+			<broadcasts>
+				<message name="pippo">
+					<argument name="pippo" value="pippo" />
+				</message>
+			</broadcasts>
+			
+			<views>
+				<include name="pippo" template="pippo.cfm" append="true" cache="true" cachekey="data" cachetimeout="123">
+					<value name="pippo" value="pippo" overwrite="false" />
+				</include>
+				<include name="main" template="pluto.cfm" append="true" cache="true" cachekey="data" cachetimeout="123">
+					<value name="pippo" value="pippo" overwrite="false" />
+				</include>
+			</views>
+			
+			<results>
+				<result name="pippo" do="event" redirect="true" append="data" />
+			</results>
+			
+		</event-handler>
+		
+	</event-handlers>
+	
+</modelglue>
