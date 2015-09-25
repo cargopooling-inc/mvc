@@ -73,8 +73,8 @@ component  output="false" implements="IConfiguration"{
 		return {'name'=name,'value'=value};
 	}
 	
-	package Struct function result( String name="", required String to, boolean redirect=false, String append="" ){
-		return {'name'=name,'to'=to,'redirect'=redirect,'append'=append};
+	package Struct function result( String name="", required String to, boolean redirect=false, String append="", String statuscode=302 ){
+		return {'name'=name,'to'=to,'redirect'=redirect,'append'=append,'statuscode'=statuscode};
 	}
 
     package Struct function newInterceptor( required String name, required String position ){

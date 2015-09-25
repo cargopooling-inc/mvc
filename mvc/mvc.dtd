@@ -83,6 +83,7 @@
 <!ATTLIST result do CDATA>
 <!ATTLIST result redirect (true|false) "false">
 <!ATTLIST result append CDATA>
+<!ATTLIST result statuscode (301|302|303) "302">
 
 
 <!ELEMENT event-types (event-type)>

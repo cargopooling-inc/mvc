@@ -339,7 +339,7 @@ component  output="false" accessors="true"{
 
                     }else{
 
-                        this.forward( result.to, result.append );
+                        this.forward( event=result.to, append=result.append, statuscode=result.statuscode );
 
                     }
 
@@ -353,7 +353,7 @@ component  output="false" accessors="true"{
 
                 }else{
 
-                    this.forward( result.to, result.append );
+                    this.forward( event=result.to, append=result.append, statuscode=result.statuscode );
 
                 }
 
@@ -378,7 +378,7 @@ component  output="false" accessors="true"{
 
                     if( result.redirect == true ){
 
-                        this.forward( result.to, result.append );
+                        this.forward( event=result.to, append=result.append, statuscode=result.statuscode );
 
                     }
 
