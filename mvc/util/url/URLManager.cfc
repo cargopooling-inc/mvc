@@ -45,14 +45,16 @@ component  output="false" accessors="true" implements="IURLManager"{
 			
 			link = link & "&#name#=#urlEncodedFormat( context.getValue( name ) )#";
 		}
-		
+
 		// append params
 		for( i in params ){
-			link = link & params;
+
+			link = link & "&#i#=#urlEncodedFormat( params[ i ] )#";
 		}
 		
 		// add anchor
-		if( len(anchor) ){
+		if( len( anchor ) ){
+
 			link = link & "##" & anchor;
 		}
 		
