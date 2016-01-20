@@ -28,6 +28,7 @@ component {
         viewLocation= "./views/",
         eventName="event",
         errorEvent="exception",
+        restErrorEvent="rest-exception",
         errorEventStatus="500",
         missingEvent="not-found",
         missingEventStatus="404",
@@ -48,7 +49,10 @@ component {
         developmentMode=true,
         beanFactoryAdapter="mvc.util.adapters.BeanFactoryAdapter",
         beanFactoryAdapterScope="request",
-        beanFactoryAdapterVar="mvc_beanFactory"
+        beanFactoryAdapterVar="mvc_beanFactory",
+        languageKey="language",
+        defaultLanguage="en",
+        helpersClasses=[]
 
     };
 
@@ -63,19 +67,36 @@ component {
     // bootstrap params
     param name="url[ _configurations.reloadKey ]" type="String" default="";
 
+    // set language param
+    param name="url[ _configurations.languageKey ]" type="String" default="#_configurations.defaultLanguage#";
 
     public function bootstrap(){
 
+        var helpers = {};
         var framework = "";
         var beanFactoryAdapter = "";
 
         structAppend( _configurations, this.mvc_configurations, true );
 
+        for( var h in _configurations.helpersClasses ){
+
+            var helper = createObject('component', h ).init();
+
+            if( !isInstanceOf( helper, "mvc.util.helper.AbsHelper" ) ){
+
+                throw( "mvc.HelperBuilderException", "Helper #h# is not type mvc.util.helpers.AbsHelper", "Please extends class mvc.util.helpers.AbsHelper" );
+
+            }
+
+            helpers.put( helper.getName() , helper );
+
+        }
+
         trace( type='Information', text="bootstrap framework..." );
 
         lock scope="Application" timeout="30" throwontimeout="true" type="exclusive" {
 
-            framework = new mvc.Framework( _configurations );
+            framework = new mvc.Framework( _configurations, helpers );
 
             beanFactoryAdapter = createObject( 'component', _configurations.beanFactoryAdapter ).init( _configurations.beanFactoryAdapterScope , _configurations.beanFactoryAdapterVar );
 
@@ -99,7 +120,7 @@ component {
 
     public function onApplicationStart(){
 
-            bootstrap();
+        bootstrap();
 
     }
 
@@ -116,6 +137,8 @@ component {
     }
 
     public function onRequestStart(){
+
+        request.language = url[ _configurations.languageKey ];
 
         structAppend( _configurations, this.mvc_configurations, true );
 

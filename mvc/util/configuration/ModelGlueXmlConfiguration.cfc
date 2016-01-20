@@ -61,7 +61,11 @@ component extends="mvc.util.configuration.Configuration" output="false"{
 	private void function loadEvent( required Xml xml ){
 		var events = xmlSearch( xml , "/modelglue/event-handlers/event-handler/" );
 		var event = {};
-		
+
+        var aliasNext = "";
+        var aliases = "";
+        var alias = "";
+
 		var triggerNext = "";
 		var triggers = "";
 		var trigger = "";
@@ -93,6 +97,20 @@ component extends="mvc.util.configuration.Configuration" output="false"{
             evtObj.put( 'interceptor', evtObj.get('type') );
 
 			event = newEvent( argumentCollection=evtObj );
+
+            aliases = xmlSearch( next, "aliases/alias/" ).iterator();
+
+            while( aliases.hasNext() ){
+
+                aliasNext = aliases.next();
+
+                param name="aliasNext.xmlAttributes.language" default="#variables._configuration.get('defaultLanguage')#";
+
+                alias = super.newAlias( aliasNext.xmlAttributes.name, evtObj.name, aliasNext.xmlAttributes.language );
+
+                super.addAlias( alias );
+
+            }
 
 			triggers = xmlSearch( next, "broadcasts/message/" ).iterator();
 			

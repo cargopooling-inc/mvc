@@ -1,8 +1,7 @@
-﻿<!---
 /**
   *
   *
-  *    Copyright 2015 - Cargopoooling, Inc. - U.S.A.
+  *    Copyright 2016 - Cargopoooling, Inc. - U.S.A.
   *    Author: Cristian Costantini
   *    www.cargopooling.com
   *
@@ -20,27 +19,15 @@
   *
   *
 **/
---->
-<cfif thistag.executionmode eq "start"><cfsilent>
+component accessors="true"{
 
-<cfscript>
+    property name="name" type="String";
 
-event = attributes.event;
+    public AbsHelper function init(){
 
-// uses i18n framework
-function i18n( required String context, required String key, String altContext="", String altKey="" ){
+        //throw( "mvc.util.helper.AbsHelperException", "This constructors are abstract!", "Please write your custom constructor with property name configured." );
 
-    return event.getValue('i18n').getText( argumentCollection=arguments );
+        return this;
+    }
 
-};
-
-// get helper by name
-function helper( required String name  ){
-
-    return event.getHelpers().get( name );
 }
-
-</cfscript>
-
-
-</cfsilent><cfinclude template="#attributes.includePath#" /></cfif>

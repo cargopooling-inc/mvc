@@ -40,7 +40,8 @@ component  output="false" accessors="true"{
 		variables._eventHandler = eventHandler; // set first event handler;
 		variables._framework = framework;
 		variables._views = new mvc.core.View();
-		
+		variables.helpers = framework.getHelpers();
+
 		return this;
 	}
 	
@@ -133,13 +134,13 @@ component  output="false" accessors="true"{
 	}
 	
 	// create link
-	public String function linkTo( required String event, String append="", String anchor="", Struct params={}, String host=variables._framework.getConfig('host'), String paramsPattern=variables._framework.getConfig('paramsPattern') ){
-		return variables._framework.getURLManager().linkTo( event, this, append, anchor, params, host, paramsPattern );
+	public String function linkTo( required String event, String append="", String anchor="", Struct params={}, String host=variables._framework.getConfig('host'), String paramsPattern=variables._framework.getConfig('paramsPattern'), String language=request.language ){
+		return variables._framework.getURLManager().linkTo( event, this, append, anchor, params, host, paramsPattern, language );
 	} 
 	
 	// forwward event 
-	public void function forward( required String event, String append="", String anchor="", Struct params={}, String host=variables._framework.getConfig('host'), String paramsPattern=variables._framework.getConfig('paramsPattern'), boolean addtoken=false, statuscode=302 ){
-		var link = linkTo( event, append, anchor, params, host, paramsPattern );
+	public void function forward( required String event, String append="", String anchor="", Struct params={}, String host=variables._framework.getConfig('host'), String paramsPattern=variables._framework.getConfig('paramsPattern'), boolean addtoken=false, Numeric statuscode=302, String language=request.language ){
+		var link = linkTo( event, append, anchor, params, host, paramsPattern, language );
 		forwarToUrl( link, addtoken, statuscode );
 	}
 	

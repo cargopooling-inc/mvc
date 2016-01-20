@@ -51,7 +51,15 @@
 <!ATTLIST event-handler cachetimeout CDATA>
 <!ATTLIST event-handler type CDATA>
 <!ATTLIST event-handler contentType CDATA>
+<!ATTLIST event-handler rest (true|false) "false">
+<!ATTLIST event-handler method (GET|POST|PUT|DELETE) "false">
 
+
+<!ELEMENT aliases ( alias )>
+
+<!ELEMENT alias EMPTY>
+<!ATTLIST alias name CDATA>
+<!ATTLIST alias language CDATA>
 
 <!ELEMENT broadcasts ( message )>
 

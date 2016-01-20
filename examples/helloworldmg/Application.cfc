@@ -8,6 +8,9 @@ component extends="mvc.DJango"{
     this.mvc_configurations.configurationXml="config/ModelGlue.xml";
     this.mvc_configurations.developmentMode=true;
     this.mvc_configurations.cacheAdapter="mvc.util.adapters.DefaultCacheAdapter";
+    this.mvc_configurations.helpersClasses=[
+        "examples.helloworldmg.helpers.MathHelper"
+    ];
 
     function onRequestStart(){
         super.onRequestStart();

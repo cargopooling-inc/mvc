@@ -13,9 +13,11 @@
 
         <h1>Hello #event.getValue('hello.message').getName()# !</h1>
 
+        <h2>#helper('math').sum( 1, 3 )#</h2>
+
         </cfif>
 
-        <form action="index.cfm?event=say.hello" method="post">
+        <form action="#event.linkTo('say.hello','language')#" method="post">
 
             <input type="text" name="name" value="" />
 

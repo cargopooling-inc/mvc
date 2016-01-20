@@ -36,6 +36,16 @@ component  output="false" implements="IConfiguration"{
 	package void function setConfig( required String name, required Any value ){
 		variables._framework.setConfig( name, value );
 	}
+
+    package Struct function newAlias( required String name, required String event, required String language ){
+
+        return {'name'=name,'event'=event,'language'=language};
+    }
+
+    package void function addAlias( required Struct alias ){
+
+        variables._framework.addAlias( alias.name, alias.event, alias.language );
+    }
 	
 	package Struct function newController( required String name, required String class ){
 
@@ -46,13 +56,13 @@ component  output="false" implements="IConfiguration"{
 		variables._framework.addController( controller.name, controller.class, controller.bindings );
 	}
 	
-	package Struct function newEvent( required String name, String access="public", boolean cache=false, String cachekey="", Numeric cachetimeout=0, String interceptor="", String contentType="text/html; charset=utf-8" ){
+	package Struct function newEvent( required String name, String access="public", boolean cache=false, String cachekey="", Numeric cachetimeout=0, String interceptor="", String contentType="text/html; charset=utf-8", boolean rest=false, String method="" ){
 
-		return {'name'=name,'access'=access,'cache'=cache,'cachekey'=cachekey,'cachetimeout'=cachetimeout,'triggers'=[],'results'=[],'views'=[],'interceptor'=listToArray( interceptor, ',' ),'contentType'=contentType};
+		return {'name'=name,'access'=access,'cache'=cache,'cachekey'=cachekey,'cachetimeout'=cachetimeout,'triggers'=[],'results'=[],'views'=[],'interceptor'=listToArray( interceptor, ',' ),'contentType'=contentType, 'rest'=rest, 'method'=method};
 	}
 	
 	package void function addEvent( required Struct event ){
-		variables._framework.addEvent( event.name, event.access, event.cache, event.cachekey, event.cachetimeout, event.triggers, event.views, event.results, event.interceptor, event.contentType );
+		variables._framework.addEvent( event.name, event.access, event.cache, event.cachekey, event.cachetimeout, event.triggers, event.views, event.results, event.interceptor, event.contentType, event.rest, event.method );
 	}
 	
 	package Struct function trigger( required String name, Array values=[] ){

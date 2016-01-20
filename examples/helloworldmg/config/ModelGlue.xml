@@ -22,7 +22,11 @@
 
 		</event-handler>
 
-		<event-handler name="home" access="public">
+		<event-handler name="home" access="public" rest="false" method="PUT">
+
+            <aliases>
+                <alias name="root" language="it" />
+            </aliases>
 
 			<views>
 				<include name="body" template="body.cfm" />
@@ -41,15 +45,29 @@
             </broadcasts>
 
 			<results>
-				<result do="home" redirect="false"/>
+				<result do="home" redirect="false" append="language"/>
 			</results>
 
 		</event-handler>
 
+        <!--
 		<event-handler name="exception" access="public">
 
             <views>
                 <include name="body" template="exception.cfm" />
+            </views>
+
+			<results>
+				<result do="main"/>
+			</results>
+
+		</event-handler>
+		-->
+
+		<event-handler name="rest-exception" access="public" contentType="application/json">
+
+            <views>
+                <include name="body" template="rest-exception.cfm" />
             </views>
 
 			<results>

@@ -36,19 +36,21 @@ component  output="false" accessors="true"{
 	property Struct controllers;
 	property Struct eventHandlers;
 	property Struct interceptors;
+	property Struct aliases;
 	property Struct configurations;
 	
 	// default configurations
 	variables.configurations = {};
 
 	// constructor
-	public Framework function init( Struct configurations={} ){
+	public Framework function init( Struct configurations={}, Struct helpers={} ){
 		
 		variables.listeners = {};
 		variables.controllers = {};
 		variables.beanFactory = "";
 		variables.eventHandlers = {};
 		variables.interceptors = {};
+		variables.aliases = {};
 
 		variables.configurations = configurations;
 		
@@ -61,7 +63,7 @@ component  output="false" accessors="true"{
         // logger
         setLogger( createObject("component", variables.configurations.loggerClass ) );
 		
-		setHelpers( {} );
+		setHelpers( helpers );
 
         variables.errorRenderer = new mvc.util.error.Error();
  
@@ -109,9 +111,11 @@ component  output="false" accessors="true"{
 	
 	// add event
 	public void function addEvent( required String name, String access='public', boolean cache=false, 
-								   String cachekey, Numeric cachetimeout, Array triggers=[], Array views=[], Array results=[], Array interceptor=[], String contentType="" ){
+								   String cachekey, Numeric cachetimeout, Array triggers=[], Array views=[],
+                                   Array results=[], Array interceptor=[], String contentType="",
+                                   boolean rest=false, String method="" ){
 	
-		getEventHandlers().put( name, {'name'=name,'access'=access,'cache'=cache,'cacheKey'=cachekey,'cachetimeout'=cachetimeout,'triggers'=triggers,'views'=views,'results'=results, 'interceptor'=interceptor, 'contentType'=contentType} );
+		getEventHandlers().put( name, {'name'=name,'access'=access,'cache'=cache,'cacheKey'=cachekey,'cachetimeout'=cachetimeout,'triggers'=triggers,'views'=views,'results'=results, 'interceptor'=interceptor, 'contentType'=contentType, 'rest'=rest, 'method'=method} );
 	}
 
 	// add interceptor
@@ -135,6 +139,39 @@ component  output="false" accessors="true"{
         return structKeyExists( getEventHandlers(), name );
     }
 
+    // add alias
+    public void function addAlias( required String name, required String event, required String language ){
+
+        getAliases().put( name, {'event'=event,'language'=language} );
+    }
+
+    // alias exists
+    public boolean function aliasExists( required String name ){
+
+        return structKeyExists( getAliases(), name );
+    }
+
+    // get alias from event if exists otherwise return event name
+    public String function getAlias( required String event, required String language ){
+
+        var alias = event;
+        var aliases = getAliases();
+
+        for( var a in aliases ){
+
+            if( aliases[ a ].event == event && aliases[ a ].language == language ){
+
+                alias = a;
+
+                break;
+
+            }
+
+        }
+
+        return alias;
+    }
+
 	// execute event handler
 	public mvc.core.Event function executeEvent( required String name, Struct values={}, mvc.core.Event eh ){
 		
@@ -142,17 +179,52 @@ component  output="false" accessors="true"{
 		var local.eh = {};
 		
 		try{
+
+            values.put( 'language', request.language );
 		
 			if( !eventExists( name ) ){
-				return onMissingEvent( name );
-			} 
-				
-			local.eh = getEventHandlers()[ name ];
-			
+
+                if( !aliasExists( name ) ){
+
+				    return onMissingEvent( name );
+
+                }else{
+
+                    var alias = getAliases().get( name );
+
+                    values.put( 'alias', name );
+
+                    local.eh = getEventHandlers()[ alias.get('event') ];
+
+                }
+
+			}else{
+
+			    local.eh = getEventHandlers()[ name ];
+
+			}
+
 			if( !local.eh.access == "public" ){
+
 				throw( "Event handler #name# is private." );
 			}
-			
+
+            if( local.eh.rest == true ){
+
+                var requestData = getHttpRequestData();
+
+                if( requestData.method == local.eh.method ){
+
+                    values.put( 'content', requestData.content );
+
+                }else{
+
+                    throw( "Request method is not #local.eh.method#" );
+
+                }
+
+            }
+
 			event = new mvc.core.Event( eventHandler=local.eh, framework=this );
 
             if( structKeyExists( arguments, 'eh' ) ){
@@ -163,7 +235,7 @@ component  output="false" accessors="true"{
 			
 			structAppend( values, form );
 			structAppend( values, url );
-			
+
 			event.merge( values );
 
             event.setValue( 'http-status-code', getConfig('defaultEventStatus') );
@@ -174,7 +246,7 @@ component  output="false" accessors="true"{
 			
 		}catch( Any e ){
 			
-			return onError( e );
+			return onError( e, local.eh );
 			
 		}
 
@@ -184,13 +256,14 @@ component  output="false" accessors="true"{
 	private mvc.core.Event function onMissingEvent( required String name ){
 		
 		var event = "";
+		var missingEvent = "";
 		var local.eh = {};
 		
 		if( !eventExists( getConfig( 'missingEvent' ) ) ){
 			throw( "Event handler #name# is undefined" );
-		} 
-			
-		local.eh = getEventHandlers()[ getConfig( 'missingEvent' ) ];
+		}
+
+		local.eh = getEventHandlers()[ getConfig( "missingEvent" ) ];
 		
 		event = new mvc.core.Event( eventHandler=local.eh, framework=this );
 		
@@ -206,29 +279,36 @@ component  output="false" accessors="true"{
 	}
 
 	// execute on error event
-	private mvc.core.Event function onError( required Any catchValues ){
+	private mvc.core.Event function onError( required Any catchValues, Struct cnf={} ){
 
+		var errorEvent = "";
+		var values = {};
 		var event = "";
 		var eh = {};
 		var er = "";
 
-		if( !eventExists( getConfig( 'errorEvent' ) ) ){
+        param name="arguments.cnf.rest" default="false";
+
+        errorEvent = iif( arguments.cnf.rest == true, de("restErrorEvent"), de("errorEvent") );
+
+		if( !eventExists( getConfig( errorEvent ) ) ){
 
             er = variables.errorRenderer.generateError( catchValues );
-
 
 			writeOutput( er );
             abort;
 
 		}
 
-		eh = getEventHandlers()[ getConfig( 'errorEvent' ) ];
+		eh = getEventHandlers()[ getConfig( errorEvent ) ];
 
 		event = new mvc.core.Event( eventHandler=eh, framework=this );
 
-		structAppend( form, url );
-		structAppend( form, arguments );
-		event.merge( form );
+		structAppend( values, url );
+		structAppend( values, form );
+		structAppend( values, {'errors'=arguments.catchValues } );
+
+		event.merge( values );
 
         event.setValue( 'http-status-code', getConfig('errorEventStatus') );
 

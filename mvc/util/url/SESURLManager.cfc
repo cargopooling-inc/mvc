@@ -28,7 +28,7 @@ component  output="false" accessors="true" implements="IURLManager"{
 	}
 	
 	// create link
-	public String function linkTo( required String event, required mvc.core.Event context, String append="", String anchor="", Struct params={}, String host="", String paramsPattern="event" ){
+	public String function linkTo( required String event, required mvc.core.Event context, String append="", String anchor="", Struct params={}, String host="", String paramsPattern="event", String language="" ){
 		
 		var link = "";
 		var name = "";
@@ -40,7 +40,7 @@ component  output="false" accessors="true" implements="IURLManager"{
 
         link = host;
 
-        map.put( variables._framework.getConfig('eventName'), event );
+        map.put( variables._framework.getConfig('eventName'), variables._framework.getAlias( event, language ) );
 		
 		// append values
 		for( i=1; i<=listLen( append ); i++ ){

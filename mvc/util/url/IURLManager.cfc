@@ -23,6 +23,6 @@ interface {
 
     public IURLManager function init( required mvc.Framework framework );
 
-    public String function linkTo( required String event, required mvc.core.Event context, String append, String anchor, Struct params, String host, String paramsPattern );
+    public String function linkTo( required String event, required mvc.core.Event context, String append, String anchor, Struct params, String host, String paramsPattern, String language );
 
 }

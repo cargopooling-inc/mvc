@@ -28,15 +28,15 @@ component  output="false" accessors="true" implements="IURLManager"{
 	}
 	
 	// create link
-	public String function linkTo( required String event, required mvc.core.Event context, String append="", String anchor="", Struct params={}, String host="", String paramsPattern="" ){
+	public String function linkTo( required String event, required mvc.core.Event context, String append="", String anchor="", Struct params={}, String host="", String paramsPattern="", String language="" ){
 		
 		var link = "";
 		var name = "";
 		var i = "";
 		
 		link = host & cgi.SCRIPT_NAME & "?" & variables._framework.getConfig('eventName') & "=";
-		
-		link = link & event;
+
+		link = link & variables._framework.getAlias( event, language );
 		
 		// append values
 		for( i=1; i<=listLen( append ); i++ ){
