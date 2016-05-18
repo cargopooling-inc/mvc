@@ -61,15 +61,6 @@ component {
     variables.initialized = false;
 
 
-    // flush cache
-    param name="url[ _configurations.flushCache ]" type="String" default="";
-
-    // bootstrap params
-    param name="url[ _configurations.reloadKey ]" type="String" default="";
-
-    // set language param
-    param name="url[ _configurations.languageKey ]" type="String" default="#_configurations.defaultLanguage#";
-
     public function bootstrap(){
 
         var helpers = {};
@@ -137,6 +128,15 @@ component {
     }
 
     public function onRequestStart(){
+
+        // flush cache
+        param name="url[ _configurations.flushCache ]" type="String" default="";
+
+        // bootstrap params
+        param name="url[ _configurations.reloadKey ]" type="String" default="";
+
+        // set language param
+        param name="url[ _configurations.languageKey ]" type="String" default="#_configurations.defaultLanguage#";
 
         request.language = url[ _configurations.languageKey ];
 

@@ -180,8 +180,12 @@ component  output="false" accessors="true"{
 		
 		try{
 
-            values.put( 'language', request.language );
-		
+            if( structKeyExists( request, 'language' ) ){
+
+                values.put( 'language', request.language );
+
+            }
+
 			if( !eventExists( name ) ){
 
                 if( !aliasExists( name ) ){
